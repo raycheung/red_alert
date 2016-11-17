@@ -1,0 +1,2 @@
+defmodule RedAlert do
+end
