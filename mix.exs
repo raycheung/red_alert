@@ -14,7 +14,8 @@ defmodule RedAlert.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :timex]]
+    [mod: {RedAlert, []},
+     applications: [:logger, :timex]]
   end
 
   # Dependencies can be Hex packages:
