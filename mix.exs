@@ -7,7 +7,10 @@ defmodule RedAlert.Mixfile do
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps()]
+     deps: deps(),
+     description: description(),
+     package: package(),
+     name: "RedAlert"]
   end
 
   # Configuration for the OTP application
@@ -30,5 +33,17 @@ defmodule RedAlert.Mixfile do
   defp deps do
     [{:timex, "~> 3.0"},
      {:credo, "~> 0.4", only: [:dev, :test]}]
+  end
+
+  defp description do
+    """
+    Monitor processes that have NOT run in designated schedule.
+    """
+  end
+
+  defp package do
+    [maintainers: ["Ray Cheung"],
+     licenses: ["Apache 2.0"],
+     links: %{"GitHub" => "https://github.com/raycheung/red_alert"}]
   end
 end
