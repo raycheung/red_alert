@@ -17,8 +17,13 @@ defmodule RedAlert.Monitor do
   end
 
   def handle_call({:snooze, tag}, _from, state) do
-    :ok = Stash.record_time(state[:stash], tag)
-    {:reply, :ok, state}
+    case Map.fetch(state[:schedules], tag) do
+      {:ok, _} ->
+        initial_snooze = Stash.record_time(state[:stash], tag)
+        if initial_snooze, do: notify_all([{tag, state[:schedules][tag], nil}], state[:notify])
+        {:reply, :ok, state}
+      :error -> {:reply, :error, state}
+    end
   end
 
   def handle_cast(:wake, state) do
@@ -39,6 +44,7 @@ defmodule RedAlert.Monitor do
   def wake, do: GenServer.cast(__MODULE__, :wake)
 
   @doc ~S"Default notification function that prints a log message"
+  def notify(tag, interval, nil), do: Logger.info "Initial check-in for #{tag}, which expect to snooze #{interval}"
   def notify(tag, interval, last_snoozed_at) do
     Logger.info "Expect #{tag} to snooze #{interval} but it missed. Last snoozed at #{last_snoozed_at}"
   end
