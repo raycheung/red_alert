@@ -17,9 +17,10 @@ defmodule RedAlert do
     Supervisor.start_link(children, opts)
   end
 
-  def stash do
-    with {:ok, agent} <- RedAlert.Stash.start_link, do: agent
-  end
-
   defdelegate snooze(tag), to: RedAlert.Monitor
+
+  defp stash do
+    {:ok, agent} = RedAlert.Stash.start_link
+    agent
+  end
 end
