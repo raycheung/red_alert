@@ -38,7 +38,7 @@ defmodule RedAlert.Mixfile do
 
   defp description do
     """
-    Monitor processes that have NOT run in designated schedule.
+    Monitor events that do NOT happen in designated schedule.
     """
   end
 

@@ -1,6 +1,6 @@
 # RedAlert
 
-Monitor processes that have **NOT** run in designated schedule.
+Monitor events that do **NOT** happen in designated schedule.
 
 ## Installation
 
