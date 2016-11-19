@@ -45,9 +45,13 @@ defmodule RedAlert.Monitor do
 
   @doc ~S"Default notification function that prints a log message"
   def notify({tag, interval}), do: Logger.info "Initial check-in for #{tag}, which expect to snooze #{interval}"
-  def notify({tag, interval, last_snoozed_at, missed_count}) do
-    Logger.info "Expect #{tag} to snooze #{interval} but it missed. Last snoozed at #{last_snoozed_at}, has missed #{missed_count} cycles."
+  def notify({tag, interval, last_snoozed_at, missed_count}) when missed_count > 5 do
+    Logger.error "Expect #{tag} to snooze #{interval} but it missed. Last snoozed at #{last_snoozed_at}, has missed #{missed_count} cycles."
   end
+  def notify({tag, interval, last_snoozed_at, missed_count}) when missed_count > 2 do
+    Logger.warn "Expect #{tag} to snooze #{interval} but it missed. Last snoozed at #{last_snoozed_at}, has missed #{missed_count} cycles."
+  end
+  def notify({tag, interval, _, _}), do: Logger.info "Expect #{tag} to snooze #{interval} but it missed."
 
   defp filter_expired(schedules, last_snoozed) do
     schedules
@@ -59,7 +63,7 @@ defmodule RedAlert.Monitor do
   defp expired?({_, _, _, 0}), do: false
   defp expired?(_), do: true
 
-  defp count_cycles(seconds, since, acc \\ 0) do
+  defp count_cycles(seconds, since, acc \\ -1) do
     if !past?(since), do: acc, else: count_cycles(seconds, shift(since, seconds), acc + 1)
   end
 
