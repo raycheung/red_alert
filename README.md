@@ -14,7 +14,7 @@ RedAlert, inspired by [Dead Man's Snitch](https://deadmanssnitch.com), attempts 
 
     ```elixir
     def deps do
-      [{:red_alert, "~> 0.1.0"}]
+      [{:red_alert, "~> 0.2.0"}]
     end
     ```
 
