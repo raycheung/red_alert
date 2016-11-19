@@ -5,6 +5,7 @@ defmodule RedAlert.Monitor do
   alias RedAlert.Interval
   require Logger
 
+  @doc "Start the monitor with the provided `stash`"
   def start_link(stash) when is_pid(stash), do: GenServer.start_link(__MODULE__, [stash: stash], name: __MODULE__)
 
   @schedules Application.get_env(:red_alert, :schedules, [])
@@ -31,22 +32,25 @@ defmodule RedAlert.Monitor do
     {:noreply, state}
   end
 
-  def filter_expired(schedules, last_snoozed) do
+  @doc ~S"Snooze for the `tag` to suppress the alert."
+  def snooze(tag), do: GenServer.call(__MODULE__, {:snooze, tag})
+
+  @doc ~S"Wake the monitor to check expired tags"
+  def wake, do: GenServer.cast(__MODULE__, :wake)
+
+  @doc ~S"Default notification function that prints a log message"
+  def notify(tag, interval, last_snoozed_at) do
+    Logger.info "Expect #{tag} to snooze #{interval} but it missed. Last snoozed at #{last_snoozed_at}"
+  end
+
+  defp filter_expired(schedules, last_snoozed) do
     schedules
     |> Enum.zip(last_snoozed)
     |> Enum.map(fn {{t, i}, {t, l}} -> {t, i, l} end)
     |> Enum.filter(&expired?/1)
   end
 
-  def expired?({_t, i, l}), do: passed?(l, Interval.get(i))
+  defp expired?({_t, i, l}), do: passed?(l, Interval.get(i))
 
-  def notify_all(n, funcs), do: Enum.each(n, fn {t, i, l} -> Enum.each(funcs, &(&1.(t, i, l))) end)
-
-  def snooze(tag), do: GenServer.call(__MODULE__, {:snooze, tag})
-
-  def wake, do: GenServer.cast(__MODULE__, :wake)
-
-  def notify(tag, interval, last_snoozed_at) do
-    Logger.info "Expect #{tag} to snooze #{interval} but it missed. Last snoozed at #{last_snoozed_at}"
-  end
+  defp notify_all(n, funcs), do: Enum.each(n, fn {t, i, l} -> Enum.each(funcs, &(&1.(t, i, l))) end)
 end

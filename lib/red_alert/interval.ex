@@ -10,7 +10,9 @@ defmodule RedAlert.Interval do
   ]
   if Mix.env in ~w(dev test)a, do: @options [{:every_5secs, 5}, {:every_30secs, 30} | @options]
 
+  @doc ~S"Get available all interval options"
   def options, do: Keyword.keys(@options)
 
-  def get(p), do: Keyword.get(@options, p)
+  @doc ~S"Get the equipvalent `interval` in term of seconds"
+  def get(interval), do: Keyword.get(@options, interval)
 end

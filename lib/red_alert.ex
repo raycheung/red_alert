@@ -17,6 +17,7 @@ defmodule RedAlert do
     Supervisor.start_link(children, opts)
   end
 
+  @doc ~S"Snooze for the `tag` to suppress the alert."
   defdelegate snooze(tag), to: RedAlert.Monitor
 
   defp stash do
