@@ -64,7 +64,7 @@ defmodule RedAlert.Monitor do
   defp expired?(_), do: true
 
   defp count_cycles(seconds, since, acc \\ -1) do
-    if !past?(since), do: acc, else: count_cycles(seconds, shift(since, seconds), acc + 1)
+    if past?(since), do: count_cycles(seconds, shift(since, seconds), acc + 1), else: acc
   end
 
   defp notify_all(n, funcs), do: Enum.each(n, fn t -> Enum.each(funcs, &(&1.(t))) end)
