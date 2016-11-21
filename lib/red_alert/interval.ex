@@ -8,7 +8,7 @@ defmodule RedAlert.Interval do
     every_1day:   @a_day,
     every_7days:  7 * @a_day,
   ]
-  if Mix.env in ~w(dev test)a, do: @options [{:every_5secs, 5}, {:every_30secs, 30} | @options]
+  if Mix.env in ~w(dev test)a, do: @options [{:every_1sec, 1}, {:every_5secs, 5}, {:every_30secs, 30} | @options]
 
   @doc ~S"Get available all interval options"
   def options, do: Keyword.keys(@options)

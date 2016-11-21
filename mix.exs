@@ -8,6 +8,7 @@ defmodule RedAlert.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps(),
+     elixirc_paths: elixirc_paths(Mix.env),
      description: description(),
      package: package(),
      name: "RedAlert"]
@@ -35,6 +36,11 @@ defmodule RedAlert.Mixfile do
      {:ex_doc, ">= 0.0.0", only: :dev},
      {:credo, "~> 0.4", only: [:dev, :test]}]
   end
+
+  # This makes sure your factory and any other modules in test/support are compiled
+  # when in the test environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp description do
     """
